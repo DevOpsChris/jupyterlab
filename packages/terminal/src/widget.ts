@@ -35,13 +35,11 @@ export class Terminal extends Widget {
     this.addClass(TERMINAL_CLASS);
 
     // Create the xterm.
-    options.scrollback = 5001;
     this._term = new Xterm(Private.getConfig(options));
     this._initializeTerm();
 
     // Initialize settings.
     let defaults = Terminal.defaultOptions;
-    // defaults.scrollback = 5000;
     this._initialCommand = options.initialCommand || defaults.initialCommand;
     this.theme = options.theme || defaults.theme;
 
@@ -95,6 +93,21 @@ export class Terminal extends Widget {
     }
     this._term.setOption('fontSize', size);
     this._needsResize = true;
+    this.update();
+  }
+
+  /**
+   * Get the current scrollback.
+   */
+  get scrollback(): number {
+    return this._term.getOption('scrollback');
+  }
+
+  /**
+   * Set the current scrollback.
+   */
+  set scrollback(scrollback: number) {
+    this._term.setOption('scrollback', scrollback); //
     this.update();
   }
 
@@ -295,7 +308,6 @@ export class Terminal extends Widget {
   private _termOpened = false;
   private _offsetWidth = -1;
   private _offsetHeight = -1;
-  // private _scroll = 5000;
 }
 
 /**
@@ -326,6 +338,9 @@ export namespace Terminal {
      */
     initialCommand: string;
 
+    /**
+     * An optional command to adjust the size of the buffer.
+     */
     scrollback: number;
   }
 
@@ -337,7 +352,7 @@ export namespace Terminal {
     fontSize: 13,
     cursorBlink: true,
     initialCommand: '',
-    scrollback: 5000
+    scrollback: 110
   };
 
   /**
@@ -367,8 +382,11 @@ namespace Private {
     } else {
       config.fontSize = Terminal.defaultOptions.fontSize;
     }
-    config.scrollback = 5000;
-    console.log(config);
+    if (options.scrollback !== void 0) {
+      config.scrollback = options.scrollback;
+    } else {
+      config.scrollback = Terminal.defaultOptions.scrollback;
+    }
     return config;
   }
 
