@@ -35,11 +35,13 @@ export class Terminal extends Widget {
     this.addClass(TERMINAL_CLASS);
 
     // Create the xterm.
+    options.scrollback = 5001;
     this._term = new Xterm(Private.getConfig(options));
     this._initializeTerm();
 
     // Initialize settings.
     let defaults = Terminal.defaultOptions;
+    // defaults.scrollback = 5000;
     this._initialCommand = options.initialCommand || defaults.initialCommand;
     this.theme = options.theme || defaults.theme;
 
@@ -293,6 +295,7 @@ export class Terminal extends Widget {
   private _termOpened = false;
   private _offsetWidth = -1;
   private _offsetHeight = -1;
+  // private _scroll = 5000;
 }
 
 /**
@@ -322,6 +325,8 @@ export namespace Terminal {
      * An optional command to run when the session starts.
      */
     initialCommand: string;
+
+    scrollback: number;
   }
 
   /**
@@ -331,7 +336,8 @@ export namespace Terminal {
     theme: 'dark',
     fontSize: 13,
     cursorBlink: true,
-    initialCommand: ''
+    initialCommand: '',
+    scrollback: 5000
   };
 
   /**
@@ -361,6 +367,8 @@ namespace Private {
     } else {
       config.fontSize = Terminal.defaultOptions.fontSize;
     }
+    config.scrollback = 5000;
+    console.log(config);
     return config;
   }
 
