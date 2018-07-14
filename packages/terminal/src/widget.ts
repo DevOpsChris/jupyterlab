@@ -107,7 +107,10 @@ export class Terminal extends Widget {
    * Set the current scrollback.
    */
   set scrollback(scrollback: number) {
-    this._term.setOption('scrollback', scrollback); //
+    if (scrollback < 50) {
+      return;
+    }
+    this._term.setOption('scrollback', scrollback);
     this.update();
   }
 
@@ -352,7 +355,7 @@ export namespace Terminal {
     fontSize: 13,
     cursorBlink: true,
     initialCommand: '',
-    scrollback: 110
+    scrollback: 1050
   };
 
   /**
